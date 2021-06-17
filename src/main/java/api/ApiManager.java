@@ -20,8 +20,8 @@ public class ApiManager {
                 .pathParams(apiRequest.getPathParams())
                 .baseUri(apiRequest.getBaseUri())
                 .contentType(ContentType.JSON)
-                .auth().oauth2(apiRequest.getToken())
                 .log().all();
     }
+
 
 }

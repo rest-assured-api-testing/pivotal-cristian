@@ -18,6 +18,7 @@ dependencies {
     implementation 'org.springframework:spring-web:5.3.7'
     compile 'io.github.cdimascio:java-dotenv:5.2.2'
     implementation 'org.testng:testng:7.4.0'
+
 }
 
 test {
