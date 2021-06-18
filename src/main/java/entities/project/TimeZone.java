@@ -1,4 +1,4 @@
-package entities;
+package entities.project;
 
 public class TimeZone {
     public String kind;

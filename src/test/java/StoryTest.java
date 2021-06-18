@@ -1,21 +1,20 @@
 import api.*;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import entities.project.Project;
+import entities.story.Story;
 import org.testng.Assert;
 import org.testng.annotations.Test;
 
-public class ProjectTest {
-//    ApiRequest apiRequest = new ApiRequest();
+public class StoryTest {
 
     @Test
-    public void getAllProjectTest() {
+    public void getAllStoryTest() {
 
         ApiRequest apiRequest = new ApiRequest();
         ApiRequestBuilder requestBuilder = new ApiRequestBuilder();
         apiRequest = requestBuilder.addHeader("X-TrackerToken", "b3b0d0a60d898c42c0bb3c1f7b7da0c2")
-                .addBaseUri("https://www.pivotaltracker.com/services/v5")
-                .addEndpoint("/projects")
+                .addBaseUri("https://www.pivotaltracker.com/services/v5/projects/2504472")
+                .addEndpoint("/stories")
                 .addMethod(ApiMethod.GET)
                 .build();
 
@@ -24,60 +23,59 @@ public class ProjectTest {
     }
 
     @Test
-    public void getProjectTest() {
+    public void getStoryTest() {
 
         ApiRequest apiRequest = new ApiRequest();
         ApiRequestBuilder requestBuilder = new ApiRequestBuilder();
 
         apiRequest = requestBuilder.addHeader("X-TrackerToken", "b3b0d0a60d898c42c0bb3c1f7b7da0c2")
                 .addBaseUri("https://www.pivotaltracker.com/services/v5")
-                .addEndpoint("/projects/{projectId}")
-                .addPathParams("projectId", "2505289")
+                .addEndpoint("/stories/{storyId}")
+                .addPathParams("storyId", "178579944")
                 .addMethod(ApiMethod.GET)
                 .build();
 
         ApiResponse apiResponse = new ApiResponse(ApiManager.execute(apiRequest));
-        Project project = apiResponse.getBody(Project.class);
-        System.out.println("------------ " + project.getName());
+        Story story = apiResponse.getBody(Story.class);
+        System.out.println("------------ " + story.getName());
         Assert.assertEquals(apiResponse.getStatusCode(), 200);
-        apiResponse.validateBodySchema("schemas/project.json");
+        System.out.println("++++++++++++" + apiResponse.getStatusCode());
+        apiResponse.validateBodySchema("schemas/story.json");
     }
 
     @Test
-    public void createAProjectTest() throws JsonProcessingException {
+    public void updateAStoryTest() throws JsonProcessingException {
         ApiRequestBuilder requestBuilder = new ApiRequestBuilder();
-        Project projectToSend = new Project();
-        projectToSend.setName("Project created from  java 2");
-
+        Story storyToSend = new Story();
+        storyToSend.setName("second story update 2 Exhaust ports are ray shielded \uD83D\uDC79");
         ApiRequest apiRequest = new ApiRequest();
 
         apiRequest = requestBuilder.addHeader("X-TrackerToken", "b3b0d0a60d898c42c0bb3c1f7b7da0c2")
                 .addBaseUri("https://www.pivotaltracker.com/services/v5")
-                .addEndpoint("/projects")
-                .addBody(new ObjectMapper().writeValueAsString(projectToSend))
-                .addMethod(ApiMethod.POST)
+                .addEndpoint("/stories/{storyId}")
+                .addPathParams("storyId", "178579944")
+                .addBody(new ObjectMapper().writeValueAsString(storyToSend))
+                .addMethod(ApiMethod.PUT)
                 .build();
 
-        System.out.println("+++++++++++++"+projectToSend.toString());
-
-
+        System.out.println("+++++++++++++" + storyToSend.toString());
         ApiResponse apiResponse = ApiManager.executeWithBody(apiRequest);
-        Project project = apiResponse.getBody(Project.class);
+        Story story = apiResponse.getBody(Story.class);
 
         Assert.assertEquals(apiResponse.getStatusCode(), 200);
-        Assert.assertEquals(project.getKind(), "project");
-        apiResponse.validateBodySchema("schemas/project.json");
+        Assert.assertEquals(story.getKind(), "story");
+        apiResponse.validateBodySchema("schemas/story.json");
     }
 
     @Test
-    public void deleteAProject() {
+    public void deleteAStory() {
         ApiRequest apiRequest = new ApiRequest();
         ApiRequestBuilder requestBuilder = new ApiRequestBuilder();
 
         apiRequest = requestBuilder.addHeader("X-TrackerToken", "b3b0d0a60d898c42c0bb3c1f7b7da0c2")
                 .addBaseUri("https://www.pivotaltracker.com/services/v5")
-                .addEndpoint("/projects/{projectId}")
-                .addPathParams("projectId", "2505289")
+                .addEndpoint("/stories/{storyId}")
+                .addPathParams("storyId", "178579944")
                 .addMethod(ApiMethod.DELETE)
                 .build();
 
@@ -86,27 +84,28 @@ public class ProjectTest {
     }
 
     @Test
-    public void updateAProjectTest() throws JsonProcessingException {
+    public void createAStoryTest() throws JsonProcessingException {
         ApiRequestBuilder requestBuilder = new ApiRequestBuilder();
-        Project projectToSend = new Project();
-        projectToSend.setName("Project created from  java 2 updated");
+        Story storyToSend = new Story();
+        storyToSend.setName("second story Replace the lining in Darth Vader's helmet \uD83D\uDC79");
+
         ApiRequest apiRequest = new ApiRequest();
 
         apiRequest = requestBuilder.addHeader("X-TrackerToken", "b3b0d0a60d898c42c0bb3c1f7b7da0c2")
-                .addBaseUri("https://www.pivotaltracker.com/services/v5")
-                .addEndpoint("/projects/{projectId}")
-                .addPathParams("projectId", "2505289")
-                .addBody(new ObjectMapper().writeValueAsString(projectToSend))
-                .addMethod(ApiMethod.PUT)
+                .addBaseUri("https://www.pivotaltracker.com/services/v5/projects/2504472")
+                .addEndpoint("/stories")
+                .addBody(new ObjectMapper().writeValueAsString(storyToSend))
+                .addMethod(ApiMethod.POST)
                 .build();
 
-        System.out.println("+++++++++++++"+projectToSend.toString());
+        System.out.println("+++++++++++++" + storyToSend.toString());
+
+
         ApiResponse apiResponse = ApiManager.executeWithBody(apiRequest);
-        Project project = apiResponse.getBody(Project.class);
+        Story story = apiResponse.getBody(Story.class);
 
         Assert.assertEquals(apiResponse.getStatusCode(), 200);
-        Assert.assertEquals(project.getKind(), "project");
-        apiResponse.validateBodySchema("schemas/project.json");
+        Assert.assertEquals(story.getKind(), "story");
+        apiResponse.validateBodySchema("schemas/story.json");
     }
-
 }

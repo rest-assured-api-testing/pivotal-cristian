@@ -65,16 +65,27 @@ public class ApiRequest {
         this.method = method;
     }
 
-    public void addHeader(final String header, final String value) {
-        headers.add(new Header(header, value));
+//    public void addHeader(final String header, final String value) {
+//        headers.add(new Header(header, value));
+//    }
+    public void addHeaders(List<Header> headers) {
+        this.headers = headers;
     }
 
-    public void addQueryParam(final String param, final String value) {
-        queryParams.put(param, value);
+//    public void addQueryParam(final String param, final String value) {
+//        queryParams.put(param, value);
+//    }
+
+    public void addQueryParams(Map<String, String> queryParams) {
+        this.queryParams = queryParams;
     }
 
-    public void addPathParam(final String param, final String value) {
-        pathParams.put(param, value);
+//    public void addPathParam(final String param, final String value) {
+//        pathParams.put(param, value);
+//    }
+
+    public void addPathParams(Map<String, String> pathParams) {
+        this.pathParams = pathParams;
     }
 
     public Headers getHeaders() {
