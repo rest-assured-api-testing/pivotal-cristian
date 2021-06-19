@@ -142,11 +142,14 @@ public class IntegrationBaseTest {
 
     @BeforeMethod(dependsOnMethods = "createProjectForDelete", onlyForGroups = "deleteIntegration")
     public void createIntegrationForDelete() throws JsonProcessingException {
-        labelToSend.setName("label 4 created");
+        integrationCreateToSend.setName("something6");
+        integrationCreateToSend.setActive(true);
+        integrationCreateToSend.setBase_url("https://come.thing/g");
+        integrationCreateToSend.setType("other");
         requestBuilder
-                .addEndpoint("/projects/{projectID}/labels")
+                .addEndpoint("/projects/{projectID}/integrations?type=other")
                 .addPathParams("projectID", apiResponse.getBody(Project.class).getId().toString())
-                .addBody(new ObjectMapper().writeValueAsString(labelToSend))
+                .addBody(new ObjectMapper().writeValueAsString(integrationCreateToSend))
                 .addMethod(ApiMethod.POST)
                 .build();
         apiResponse = ApiManager.executeWithBody(requestBuilder.build());
@@ -162,7 +165,7 @@ public class IntegrationBaseTest {
         requestBuilder
                 .clearPathParams()
                 .addEndpoint("/projects/{projectId}")
-                .addPathParams("projectId", Integer.toString(apiResponse.getBody(Label.class).getProject_id()))
+                .addPathParams("projectId", Integer.toString(apiResponse.getBody(Integration.class).getProject_id()))
                 .addMethod(ApiMethod.DELETE)
                 .build();
         ApiManager.execute(requestBuilder.build());
