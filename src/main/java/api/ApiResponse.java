@@ -2,8 +2,6 @@ package api;
 
 import io.restassured.response.Response;
 
-import java.util.List;
-
 import static io.restassured.module.jsv.JsonSchemaValidator.matchesJsonSchemaInClasspath;
 
 public class ApiResponse {
@@ -12,6 +10,9 @@ public class ApiResponse {
 
     public ApiResponse(Response response) {
         this.response = response;
+    }
+
+    public ApiResponse() {
     }
 
     public Response getResponse() {

@@ -88,6 +88,10 @@ public class ApiRequest {
         this.pathParams = pathParams;
     }
 
+    public void clear() {
+        pathParams.clear();
+    }
+
     public Headers getHeaders() {
         return new Headers(headers);
     }
