@@ -1,14 +1,13 @@
 import api.*;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import entities.label.Label;
+import entities.storytask.StoryTask;
 import org.testng.Assert;
 import org.testng.annotations.Test;
 
-public class LabelTest {
-
+public class StoryTaskTest {
     @Test
-    public void getAllLabelsTest() {
+    public void getAllStoryTaskTest() {
 
         ApiRequest apiRequest = new ApiRequest();
         ApiRequestBuilder requestBuilder = new ApiRequestBuilder();
@@ -19,8 +18,9 @@ public class LabelTest {
 //        apiRequest.setMethod(ApiMethod.GET);
         apiRequest = requestBuilder.addHeader("X-TrackerToken", "b3b0d0a60d898c42c0bb3c1f7b7da0c2")
                 .addBaseUri("https://www.pivotaltracker.com/services/v5")
-                .addEndpoint("/projects/2504472/labels")
+                .addEndpoint("/projects/{projectID}/stories/{storyID}/tasks")
                 .addPathParams("projectID", "2504472")
+                .addPathParams("storyID", "178591234")
                 .addMethod(ApiMethod.GET)
                 .build();
 
@@ -29,93 +29,97 @@ public class LabelTest {
     }
 
     @Test
-    public void createALabelTest() throws JsonProcessingException {
+    public void createAStoryTaskTest() throws JsonProcessingException {
         ApiRequestBuilder requestBuilder = new ApiRequestBuilder();
-        Label labelToSend = new Label();
-        labelToSend.setName("label 4 created");
+        StoryTask storyTaskToSend = new StoryTask();
+        storyTaskToSend.setDescription("port 270");
 
         ApiRequest apiRequest = new ApiRequest();
 
         apiRequest = requestBuilder.addHeader("X-TrackerToken", "b3b0d0a60d898c42c0bb3c1f7b7da0c2")
                 .addBaseUri("https://www.pivotaltracker.com/services/v5")
-                .addEndpoint("/projects/{projectID}/labels")
+                .addEndpoint("/projects/{projectID}/stories/{storyID}/tasks")
                 .addPathParams("projectID", "2504472")
-                .addBody(new ObjectMapper().writeValueAsString(labelToSend))
+                .addPathParams("storyID", "178591234")
+                .addBody(new ObjectMapper().writeValueAsString(storyTaskToSend))
                 .addMethod(ApiMethod.POST)
                 .build();
 
-        System.out.println("+++++++++++++" + labelToSend.toString());
+        System.out.println("+++++++++++++" + storyTaskToSend.toString());
 
 
         ApiResponse apiResponse = ApiManager.executeWithBody(apiRequest);
-        Label label = apiResponse.getBody(Label.class);
+        StoryTask storyTask = apiResponse.getBody(StoryTask.class);
 
         Assert.assertEquals(apiResponse.getStatusCode(), 200);
-        Assert.assertEquals(label.getKind(), "label");
-        apiResponse.validateBodySchema("schemas/label.json");
+        Assert.assertEquals(storyTask.getKind(), "task");
+        apiResponse.validateBodySchema("schemas/storytask.json");
     }
 
     @Test
-    public void getLabelTest() {
+    public void getStoryTaskTest() {
 
         ApiRequest apiRequest = new ApiRequest();
         ApiRequestBuilder requestBuilder = new ApiRequestBuilder();
 
         apiRequest = requestBuilder.addHeader("X-TrackerToken", "b3b0d0a60d898c42c0bb3c1f7b7da0c2")
                 .addBaseUri("https://www.pivotaltracker.com/services/v5")
-                .addEndpoint("/projects/{projectID}/labels/{labelId}")
-                .addPathParams("labelId", "23169744")
+                .addEndpoint("/projects/{projectID}/stories/{storyID}/tasks/{storyTaskID}")
                 .addPathParams("projectID", "2504472")
+                .addPathParams("storyID", "178591234")
+                .addPathParams("storyTaskID", "73033447")
                 .addMethod(ApiMethod.GET)
                 .build();
 
         ApiResponse apiResponse = new ApiResponse(ApiManager.execute(apiRequest));
-        Label label = apiResponse.getBody(Label.class);
-        System.out.println("------------ " + label.getName());
+        StoryTask storyTask = apiResponse.getBody(StoryTask.class);
+        System.out.println("------------ " + storyTask.getDescription());
         Assert.assertEquals(apiResponse.getStatusCode(), 200);
-        apiResponse.validateBodySchema("schemas/label.json");
+        System.out.println("++++++++++++" + apiResponse.getStatusCode());
+        apiResponse.validateBodySchema("schemas/storytask.json");
     }
 
     @Test
-    public void updateALabelTest() throws JsonProcessingException {
+    public void updateAStoryTaskTest() throws JsonProcessingException {
         ApiRequestBuilder requestBuilder = new ApiRequestBuilder();
-        Label labelToSend = new Label();
-        labelToSend.setName("label 2 updated uuuupdate");
+        StoryTask storyTaskToSend = new StoryTask();
+        storyTaskToSend.setDescription("port 270 update");
         ApiRequest apiRequest = new ApiRequest();
 
         apiRequest = requestBuilder.addHeader("X-TrackerToken", "b3b0d0a60d898c42c0bb3c1f7b7da0c2")
                 .addBaseUri("https://www.pivotaltracker.com/services/v5")
-                .addEndpoint("/projects/{projectID}/labels/{labelId}")
-                .addPathParams("labelId", "23169744")
+                .addEndpoint("/projects/{projectID}/stories/{storyID}/tasks/{storyTaskID}")
                 .addPathParams("projectID", "2504472")
-                .addBody(new ObjectMapper().writeValueAsString(labelToSend))
+                .addPathParams("storyID", "178591234")
+                .addPathParams("storyTaskID", "73033447")
+                .addBody(new ObjectMapper().writeValueAsString(storyTaskToSend))
                 .addMethod(ApiMethod.PUT)
                 .build();
 
-        System.out.println("+++++++++++++" + labelToSend.toString());
+        System.out.println("+++++++++++++" + storyTaskToSend.toString());
         ApiResponse apiResponse = ApiManager.executeWithBody(apiRequest);
-        Label label = apiResponse.getBody(Label.class);
+        StoryTask storyTask = apiResponse.getBody(StoryTask.class);
 
         Assert.assertEquals(apiResponse.getStatusCode(), 200);
-        Assert.assertEquals(label.getKind(), "label");
-        apiResponse.validateBodySchema("schemas/label.json");
+        Assert.assertEquals(storyTask.getKind(), "task");
+        apiResponse.validateBodySchema("schemas/storytask.json");
     }
 
     @Test
-    public void deleteALabel() {
+    public void deleteAStoryTask() {
         ApiRequest apiRequest = new ApiRequest();
         ApiRequestBuilder requestBuilder = new ApiRequestBuilder();
 
         apiRequest = requestBuilder.addHeader("X-TrackerToken", "b3b0d0a60d898c42c0bb3c1f7b7da0c2")
                 .addBaseUri("https://www.pivotaltracker.com/services/v5")
-                .addEndpoint("/projects/{projectID}/labels/{labelId}")
-                .addPathParams("labelId", "23169744")
+                .addEndpoint("/projects/{projectID}/stories/{storyID}/tasks/{storyTaskID}")
                 .addPathParams("projectID", "2504472")
+                .addPathParams("storyID", "178591234")
+                .addPathParams("storyTaskID", "73033447")
                 .addMethod(ApiMethod.DELETE)
                 .build();
 
         ApiResponse apiResponse = new ApiResponse(ApiManager.execute(apiRequest));
         Assert.assertEquals(apiResponse.getStatusCode(), 204);
     }
-
 }

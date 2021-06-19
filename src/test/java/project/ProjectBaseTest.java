@@ -1,3 +1,5 @@
+package project;
+
 import api.ApiManager;
 import api.ApiMethod;
 import api.ApiRequestBuilder;
@@ -24,6 +26,7 @@ public class ProjectBaseTest {
 //        Project projectToSend = new Project();
         projectToSend.setName("projectc 100002");
         requestBuilder
+                .clearPathParams()
                 .addEndpoint("/projects")
                 .addBody(new ObjectMapper().writeValueAsString(projectToSend))
                 .addMethod(ApiMethod.POST)
