@@ -1,3 +1,5 @@
+package integration;
+
 import api.*;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -6,39 +8,29 @@ import entities.integration.IntegrationCreate;
 import org.testng.Assert;
 import org.testng.annotations.Test;
 
-public class IntegrationTest {
+public class IntegrationTest extends IntegrationBaseTest{
 
     @Test
     public void getAllIntegrationTest() {
-
-        ApiRequest apiRequest = new ApiRequest();
-        ApiRequestBuilder requestBuilder = new ApiRequestBuilder();
-        apiRequest = requestBuilder.addHeader("X-TrackerToken", "b3b0d0a60d898c42c0bb3c1f7b7da0c2")
-                .addBaseUri("https://www.pivotaltracker.com/services/v5")
-                .addEndpoint("/projects/{projectID}/integrations")
-                .addPathParams("projectID", "2504472")
+        requestBuilder
+                .clearPathParams()
+                .addEndpoint("/projects/{projectId}/labels")
+                .addPathParams("projectId", "2504472")
                 .addMethod(ApiMethod.GET)
                 .build();
-
-        ApiResponse apiResponse = new ApiResponse(ApiManager.execute(apiRequest));
+        apiResponse = new ApiResponse(ApiManager.execute(requestBuilder.build()));
         Assert.assertEquals(apiResponse.getStatusCode(), 200);
     }
 
-    @Test
+    @Test(groups = "getIntegration")
     public void getIntegrationTest() {
-
-        ApiRequest apiRequest = new ApiRequest();
-        ApiRequestBuilder requestBuilder = new ApiRequestBuilder();
-
-        apiRequest = requestBuilder.addHeader("X-TrackerToken", "b3b0d0a60d898c42c0bb3c1f7b7da0c2")
-                .addBaseUri("https://www.pivotaltracker.com/services/v5")
+        requestBuilder
                 .addEndpoint("/projects/{projectID}/integrations/{integrationID}")
-                .addPathParams("projectID", "2504472")
-                .addPathParams("integrationID", "52458")
+                .addPathParams("projectID", Integer.toString(apiResponse.getBody(Integration.class).getProject_id()))
+                .addPathParams("integrationID", Integer.toString(apiResponse.getBody(Integration.class).getId()))
                 .addMethod(ApiMethod.GET)
                 .build();
-
-        ApiResponse apiResponse = new ApiResponse(ApiManager.execute(apiRequest));
+        ApiManager.execute(requestBuilder.build());
         Integration integration = apiResponse.getBody(Integration.class);
         System.out.println("------------ " + integration.getName());
         Assert.assertEquals(apiResponse.getStatusCode(), 200);
@@ -46,24 +38,17 @@ public class IntegrationTest {
         apiResponse.validateBodySchema("schemas/integration.json");
     }
 
-    @Test
+    @Test(groups = "updateIntegration")
     public void updateAIntegrationTest() throws JsonProcessingException {
-        ApiRequestBuilder requestBuilder = new ApiRequestBuilder();
-        Integration integrationToSend = new Integration();
         integrationToSend.setName("something6 updated");
-        ApiRequest apiRequest = new ApiRequest();
-
-        apiRequest = requestBuilder.addHeader("X-TrackerToken", "b3b0d0a60d898c42c0bb3c1f7b7da0c2")
-                .addBaseUri("https://www.pivotaltracker.com/services/v5")
+        requestBuilder
                 .addEndpoint("/projects/{projectID}/integrations/{integrationID}")
-                .addPathParams("projectID", "2504472")
-                .addPathParams("integrationID", "52458")
+                .addPathParams("projectID", Integer.toString(apiResponse.getBody(Integration.class).getProject_id()))
+                .addPathParams("integrationID", Integer.toString(apiResponse.getBody(Integration.class).getId()))
                 .addBody(new ObjectMapper().writeValueAsString(integrationToSend))
                 .addMethod(ApiMethod.PUT)
                 .build();
-
-        System.out.println("+++++++++++++" + integrationToSend.toString());
-        ApiResponse apiResponse = ApiManager.executeWithBody(apiRequest);
+        ApiResponse apiResponse = ApiManager.executeWithBody(requestBuilder.build());
         Integration integration = apiResponse.getBody(Integration.class);
 
         Assert.assertEquals(apiResponse.getStatusCode(), 200);
@@ -71,7 +56,7 @@ public class IntegrationTest {
         apiResponse.validateBodySchema("schemas/integration.json");
     }
 
-    @Test
+    @Test(groups = "deleteIntegration")
     public void deleteAIntegration() {
         ApiRequest apiRequest = new ApiRequest();
         ApiRequestBuilder requestBuilder = new ApiRequestBuilder();
